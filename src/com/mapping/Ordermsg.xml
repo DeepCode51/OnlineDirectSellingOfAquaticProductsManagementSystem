@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.OrdermsgDAO">
+    <resultMap type="com.entity.Ordermsg" id="BaseResultMap">
+      <id column="id" property="id" jdbcType="INTEGER"/>
+      <result column="orderno" property="orderno" jdbcType="VARCHAR"/>
+      <result column="memberid" property="memberid" jdbcType="VARCHAR"/>
+      <result column="total" property="total" jdbcType="VARCHAR"/>
+      <result column="fkstatus" property="fkstatus" jdbcType="VARCHAR"/>
+      <result column="fhstatus" property="fhstatus" jdbcType="VARCHAR"/>
+      <result column="shstatus" property="shstatus" jdbcType="VARCHAR"/>
+      <result column="name" property="name" jdbcType="VARCHAR"/>
+      <result column="tel" property="tel" jdbcType="VARCHAR"/>
+      <result column="addr" property="addr" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <insert id="add" parameterType="Ordermsg">
+      insert into ordermsg values(null,#{orderno},#{memberid},#{total},#{fkstatus},'','',#{name},#{tel},#{addr},now())
+    </insert>
+    
+    <select id="selectPayment" parameterType="Int" resultMap="BaseResultMap">
+      select * from ordermsg where memberid=#{0} and shstatus!='已收货' and shstatus='' order by id desc
+    </select>
+    
+    
+    <select id="selectFaHuo" parameterType="Int" resultMap="BaseResultMap">
+      select * from ordermsg where memberid=#{0} and fhstatus='已发货' and shstatus=''  order by id desc
+    </select>
+    
+    <select id="selectShouhuo" parameterType="Int" resultMap="BaseResultMap">
+      select * from ordermsg where memberid=#{0} and shstatus='待收货' order by id desc
+    </select>
+    
+    <select id="selectAccomplish" parameterType="Int" resultMap="BaseResultMap">
+      select * from ordermsg where memberid=#{0} and shstatus='已收货' order by id desc
+    </select>
+    
+    <update id="payOrder" parameterType="Int">
+      update ordermsg set fkstatus='已付款',fhstatus='待发货' where id=#{id}    
+    </update>
+    
+    <select id="selectAll" resultMap="BaseResultMap">
+      select * from ordermsg where 1=1 order by id desc
+    </select>
+    
+    <update id="updateSh" parameterType="Int">
+      update ordermsg set shstatus='已收货' where id = #{id}
+    </update>
+    
+    <select id="searchOrdername"  resultMap="BaseResultMap">
+      select * from ordermsg where orderno like "%"#{order}"%" order by id desc
+    </select>
+    
+    <delete id="delete" parameterType="Int">
+      delete from ordermsg where id = #{id}
+    </delete>
+    
+    <select id="findById" parameterType="Int" resultType="Ordermsg">
+      select * from ordermsg where id = #{id}
+    </select>
+    
+    <update id="update" parameterType="Ordermsg">
+      update ordermsg set fhstatus='已发货',shstatus='' where id= #{id} 
+    </update>
+    
+    <update id="updateShsatus" parameterType="Ordermsg">
+      update ordermsg set shstatus='待收货' where id= #{id} 
+    </update>
+    
+    
+    <select id="selectFkorder" resultMap="BaseResultMap">
+      select * from ordermsg where fkstatus='已付款' order by id desc
+    </select>
+    
+    <select id="selectSaleMoney" resultMap="BaseResultMap">
+      select DISTINCT(DATE_FORMAT(savetime,'%Y-%c-%d')) as savetime,SUM(total) as total from ordermsg where fkstatus='已付款'  GROUP BY DATE_FORMAT(savetime,'%Y-%c-%d') order by DATE_FORMAT(savetime,'%Y-%c-%d')
+    </select>
+    
+    <select id="orderNum" resultMap="BaseResultMap">
+      select DISTINCT(DATE_FORMAT(savetime,'%Y-%c-%d')) as savetime,COUNT(*) as orderno from ordermsg GROUP BY DATE_FORMAT(savetime,'%Y-%c-%d')
+    </select>
+    
+    
+    
+	
+</mapper>
+

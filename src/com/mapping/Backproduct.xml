@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.BackproductDAO">
+    <resultMap type="com.entity.Backproduct" id="BaseResultMap">
+      <id column="id" property="id" jdbcType="INTEGER"/>
+      <result column="memberid" property="memberid" jdbcType="INTEGER"/>
+      <result column="productid" property="productid" jdbcType="INTEGER"/>
+      <result column="content" property="content" jdbcType="VARCHAR"/>
+      <result column="shstatus" property="shstatus" jdbcType="VARCHAR"/>
+      <result column="savetime" property="savetime" jdbcType="VARCHAR"/>
+      <result column="orderid" property="orderid" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <insert id="add" parameterType="backproduct">
+      insert into backproduct values(null,#{memberid},#{productid},#{content},#{shstatus},#{savetime},#{orderid})
+    </insert>
+    
+    <update id="update">
+      update backproduct
+      <set>
+        <if test="shstatus!=null and shstatus!=''">
+        shstatus=#{shstatus},
+        </if>
+      </set>
+      where id=#{id}
+    </update>
+    
+    <delete id="delete" parameterType="backproduct">
+      delete from backproduct where id=#{id}
+    </delete>
+    
+    <select id="selectAll" parameterType="hashmap" resultMap="BaseResultMap">
+      select * from backproduct where 1=1 
+      <if test="key!=null and key!=''">
+        and (productid in (select id from product where productname like "%"#{key}"%") or memberid in (select id from member where tname like "%"#{key}"%")  or orderid in(select id from ordermsgdetails where orderno=#{key}))
+      </if>
+      <if test="memberid!=null and memberid!=''">
+        and memberid=#{memberid}
+      </if>
+      
+      <if test="orderid!=null and orderid!=''">
+        and orderid=#{orderid}
+      </if>
+        order by id desc
+    </select>
+    
+    <select id="findById" parameterType="int" resultType="backproduct">
+       select * from backproduct where id=#{id}
+    </select>
+    
+	
+</mapper>
+

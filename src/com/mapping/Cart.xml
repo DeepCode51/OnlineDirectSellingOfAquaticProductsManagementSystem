@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.CartDAO">
+    <resultMap type="com.entity.Cart" id="BaseResultMap">
+      <id column="id" property="id" jdbcType="INTEGER"/>
+      <result column="productid" property="productid" jdbcType="INTEGER"/>
+      <result column="memberid" property="memberid" jdbcType="INTEGER"/>
+      <result column="num" property="num" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <select id="selectMyProduct" resultMap="BaseResultMap">
+      select * from cart where memberid=#{0} and productid=#{1}
+    </select>
+    
+    <insert id="add" parameterType="Cart">
+      insert into cart values(null,#{productid},#{memberid},#{num})
+    </insert>
+    
+    <update id="update" parameterType="Cart">
+      update cart set num = #{num} where id=#{id}
+    </update>
+    
+    <select id="selectMyProductList" parameterType="Int" resultMap="BaseResultMap">
+      select * from cart where memberid=#{0} order by id desc
+    </select>
+    
+    <delete id="delCart" parameterType="Int">
+      delete from cart where id=#{id}
+    </delete>
+    
+    <update id="updateNum" parameterType="Cart">
+      update cart set num = #{num} where id=#{id}
+    </update>
+    
+	
+</mapper>
+

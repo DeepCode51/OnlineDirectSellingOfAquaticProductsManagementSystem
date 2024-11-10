@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ProductDAO">
+    
+    <resultMap type="com.entity.Product" id="BaseResultMap">
+      <id column="id" property="id" jdbcType="INTEGER"/>
+      <result column="productname" property="productname" jdbcType="VARCHAR"/>
+      <result column="filename" property="filename" jdbcType="VARCHAR"/>
+      <result column="price" property="price" jdbcType="DOUBLE"/>
+      <result column="discount" property="discount" jdbcType="DOUBLE"/>
+      <result column="categoryid" property="categoryid" jdbcType="VARCHAR"/>
+      <result column="content" property="content" jdbcType="VARCHAR"/>
+      <result column="delstatus" property="delstatus" jdbcType="VARCHAR"/>
+      <result column="looknum" property="looknum" jdbcType="INTEGER"/>
+      <result column="isxs" property="isxs" jdbcType="INTEGER"/>
+    </resultMap>
+    
+    <select id="selectAll" resultMap="BaseResultMap">
+      select * from product where 1=1 and delstatus=0 order by id desc
+    </select>
+    
+    <insert id="add" parameterType="Product">
+      insert into product values(null,#{productname},#{filename},#{price},#{discount},#{categoryid},#{content},0,0,0,'no')
+    </insert>
+    
+    <select id="findById" parameterType="int" resultType="Product">
+      select * from product where id=#{id}
+    </select>
+    
+    <update id="update" parameterType="Product">
+      update product set productname=#{productname},filename=#{filename},price=#{price},discount=#{discount},categoryid=#{categoryid},content=#{content} where id=#{id}
+    </update>
+    
+    <update id="delete" parameterType="int">
+      update product set delstatus=1 where id=#{id}
+    </update>
+    
+    <select id="search" parameterType="String" resultMap="BaseResultMap">
+      select * from product where 1=1
+      <if test="#{0}!=null">
+        and productname like "%"#{0}"%"
+      </if>
+      <if test="#{1}!=null">
+        and categoryid like "%"#{1}"%"
+      </if>
+    </select>
+    
+    <select id="selectCorrelation"  resultMap="BaseResultMap">
+      select * from product where id!=#{0} and delstatus=0 and categoryid=#{1}
+    </select>
+    
+    <select id="selectCategory"  resultMap="BaseResultMap">
+      select * from product where delstatus=0 and categoryid=#{0} order by id desc
+    </select>
+    
+    <select id="selectProductname" parameterType="String"  resultMap="BaseResultMap">
+      select * from product where delstatus=0 and productname like "%"#{productname}"%"
+    </select>
+    
+    <update id="updateVote" parameterType="Product">
+      update product set vote=vote+1 where id=#{id}
+    </update>
+    
+    <select id="selectVote" resultMap="BaseResultMap">
+      select * from product where 1=1 and vote>0 order by vote desc
+    </select>
+    
+    <update id="updateLooknum" parameterType="Product">
+      update product set looknum=#{looknum} where id=#{id}
+    </update>
+    
+    <select id="selectProductAll" parameterType="HashMap" resultMap="BaseResultMap">
+    select * from product where 1=1 and delstatus=0
+    <if test="key!=null">
+    and <![CDATA[ price >=#{key} ]]>
+    </if>
+    <if test="key!=null">
+    and <![CDATA[ price <=#{key1} ]]>
+    </if>
+     order by id desc
+    </select>
+    
+    <update id="updateIsxs" parameterType="Product">
+      update product set isxs=#{isxs} where id=#{id}
+    </update>
+    
+	
+</mapper>
+

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.MemberDAO">
+    <resultMap type="com.entity.Member" id="BaseResultMap">
+      <id column="id" property="id" jdbcType="INTEGER"/>
+      <result column="uname" property="uname" jdbcType="VARCHAR"/>
+      <result column="upass" property="upass" jdbcType="VARCHAR"/>
+      <result column="tname" property="tname" jdbcType="VARCHAR"/>
+      <result column="filename" property="filename" jdbcType="VARCHAR"/>
+      <result column="tel" property="tel" jdbcType="VARCHAR"/>
+      <result column="email" property="email" jdbcType="VARCHAR"/>
+      <result column="content" property="content" jdbcType="VARCHAR"/>
+      <result column="lev" property="lev" jdbcType="VARCHAR"/>
+      <result column="integral" property="integral" jdbcType="INTEGER"/>
+      <result column="yue" property="yue" jdbcType="DOUBLE"/>
+      <result column="savetime" property="savetime" jdbcType="VARCHAR"/>
+      <result column="delstatus" property="delstatus" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <select id="selectOne"  parameterType="String" resultMap="BaseResultMap">
+      select * from member where uname=#{0} and upass=#{1} and delstatus=0
+    </select>
+    
+    <insert id="add" parameterType="Member">
+      insert into member values(null,#{uname},#{upass},#{tname},#{filename},#{tel},#{email},#{content},'普通用户',0,0.0,now(),'0')
+    </insert>
+    
+    <select id="checkUname" parameterType="String" resultMap="BaseResultMap">
+      select * from member where uname=#{uname}  and delstatus=0
+    </select>
+    
+    <select id="findById" parameterType="Int" resultType="Member">
+      select * from member where id=#{id}
+    </select>
+    
+    <select id="selectAll"  resultMap="BaseResultMap">
+      select * from member where 1=1 and delstatus='0'
+    </select>
+    
+    <select id="selectMember" parameterType="String" resultMap="BaseResultMap">
+      select * from member where 1=1 and delstatus='0' and (uname like "%"#{0}"%" or tname like "%"#{0}"%")
+    </select>
+    
+    
+    
+    <update id="update" parameterType="Member">
+      update member
+      <set>
+        <if test="upass!=null">
+          upass=#{upass},
+        </if>
+        <if test="tname!=null">
+          tname=#{tname},
+        </if>
+        <if test="filename!=null">
+          filename=#{filename},
+        </if>
+        <if test="tel!=null">
+          tel=#{tel},
+        </if>
+        <if test="email!=null">
+          email=#{email},
+        </if>
+        <if test="content!=null">
+          content=#{content},
+        </if>
+        <if test="yue!=null">
+          yue=#{yue},
+        </if>
+        <if test="lev!=null">
+          lev=#{lev}
+        </if>
+      </set> 
+      where id=#{id}
+    </update>
+    
+    <update id="delete" parameterType="Int">
+      update member set delstatus='1' where id=#{id}
+    </update>
+    
+    <delete id="updateLev" parameterType="Member">
+      update member set lev=#{lev} where id=#{id}
+    </delete>
+    
+    
+    
+    
+	
+</mapper>
+

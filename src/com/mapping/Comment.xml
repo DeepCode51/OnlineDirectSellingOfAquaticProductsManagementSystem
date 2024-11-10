@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.CommentDAO">
+    <resultMap type="com.entity.Comment" id="BaseResultMap">
+      <id column="id" property="id" jdbcType="INTEGER"/>
+      <result column="memberid" property="memberid" jdbcType="INTEGER"/>
+      <result column="productid" property="productid" jdbcType="INTEGER"/>
+      <result column="quality" property="quality" jdbcType="INTEGER"/>
+      <result column="price" property="price" jdbcType="INTEGER"/>
+      <result column="content" property="content" jdbcType="VARCHAR"/>
+      <result column="savetime" property="savetime" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <insert id="add" parameterType="Comment">
+      insert into comment values(null,#{memberid},#{productid},#{quality},#{price},#{content},now());
+    </insert>
+    
+    <select id="selectProduct" parameterType="Int" resultMap="BaseResultMap">
+      select * from comment where productid = #{0} order by id desc
+    </select>
+    
+    <delete id="delete" parameterType="Int">
+      delete from comment where id=#{id}
+    </delete>
+    
+    
+	
+</mapper>
+

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.OrdermsgdetailsDAO">
+    <resultMap type="com.entity.Ordermsgdetails" id="BaseResultMap">
+      <id column="id" property="id" jdbcType="INTEGER"/>
+      <result column="orderno" property="orderno" jdbcType="VARCHAR"/>
+      <result column="productid" property="productid" jdbcType="VARCHAR"/>
+      <result column="memberid" property="memberid" jdbcType="VARCHAR"/>
+      <result column="num" property="num" jdbcType="INTEGER"/>
+      <result column="thstatus" property="thstatus" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <insert id="add" parameterType="Ordermsgdetails">
+       insert into ordermsgdetails values(null,#{orderno},#{productid},#{memberid},#{num},now(),#{thstatus})
+    </insert>
+    
+    <select id="selectorderDetails" parameterType="String" resultMap="BaseResultMap">
+      select * from  ordermsgdetails  where orderno=#{orderno}
+    </select>
+    
+    <delete id="delete" parameterType="Int">
+      delete from ordermsgdetails where id=#{id}
+    </delete>
+    
+    <select id="selectOne" resultMap="BaseResultMap">
+      select * from ordermsgdetails where productid = #{0} and memberid = #{1}
+    </select>
+    
+    <select id="selectSale" parameterType="Int" resultMap="BaseResultMap">
+      select d.* from ordermsgdetails d,ordermsg o where d.productid = #{productid} and d.orderno = o.orderno and o.fkstatus='已付款'
+    </select>
+    
+    <update id="update" parameterType="Ordermsgdetails">
+      update ordermsgdetails 
+      <set>
+        <if test="thstatus!=null and thstatus!=''">
+          thstatus=#{thstatus},
+        </if>
+      </set>
+      where id=#{id}
+    </update>
+    
+    <select id="findById" parameterType="int" resultType="Ordermsgdetails">
+      select * from ordermsgdetails where id=#{id}
+    </select>
+	
+	
+</mapper>
+
